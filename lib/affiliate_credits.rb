@@ -3,7 +3,7 @@ module AffiliateCredits
 
   def create_affiliate_credits(sender, recipient, event)
     #check if sender should receive credit on affiliate register
-    if sender_credit_amount = SpreeAffiliate::Config["sender_credit_on_#{event}_amount".to_sym] and sender_credit_amount.to_f > 0
+    if sender_credit_amount = SpreeAffiliate::Config["sender_credit_on_#{event}_amount".to_sym] and sender_credit_amount.to_f > 0 and !sender.has_invited
       credit = Spree::StoreCredit.create({:amount => sender_credit_amount,
                          :remaining_amount => sender_credit_amount,
                          :reason => "Affiliate: #{event}", :user => sender}, :without_protection => true)
