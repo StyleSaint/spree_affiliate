@@ -1,7 +1,7 @@
 Spree::User.class_eval do
 
   has_many :affiliates, :class_name => 'Spree::Affiliate', :foreign_key => "partner_id"
-  has_many :referred_users, :class_name => 'Spree::User', :through => :affiliates
+  has_many :referred_users, :class_name => 'Spree::User', :through => :affiliates, :source => 'user'
   has_one :affiliate_partner, :class_name => "Spree::Affiliate", :foreign_key => "user_id"
 
   def referred_by
