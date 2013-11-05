@@ -7,7 +7,7 @@ module AffiliateCredits
       credit = Spree::StoreCredit.create({:amount => sender_credit_amount,
                          :remaining_amount => sender_credit_amount,
                          :reason => "Affiliate: #{event}", :user => sender}, :without_protection => true)
-
+      RafCreditNoticeJob.perform_async sender.id, recipient.id
       log_event recipient.affiliate_partner, sender, credit, event
     end if sender
 
