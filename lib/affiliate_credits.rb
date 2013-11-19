@@ -35,19 +35,20 @@ module AffiliateCredits
     affiliate.events.create({:reward => credit, :name => event, :user => user}, :without_protection => true)
   end
 
-  def check_affiliate
-    @user.reload if @user.present? and not @user.new_record?
-    return if cookies[:ref_id].blank? || @user.nil? || @user.invalid?
-    sender = Spree.user_class.find_by_ref_id(cookies[:ref_id])
+  def check_affiliate(user)
+    return if cookies[:ref_id].blank? || user.nil? || user.invalid?
+    sender = Spree::User.find_by_ref_id(cookies[:ref_id])
 
-    if sender
-      sender.affiliates.create(:user_id => @user.id)
-
+    if sender && sender.id != user.id
+      affiliate = sender.affiliates.build(:user_id => user.id)
+      return unless affiliate.save
       #create credit (if required)
-      @credited = create_affiliate_credits(sender, @user, "register")
+      create_register_affiliate_credits(sender, user, "register")
+      sender.update_attributes(has_invited: true)
     end
 
     #destroy the cookie, as the affiliate record has been created.
     cookies[:ref_id] = nil
   end
+
 end
