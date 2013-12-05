@@ -10,7 +10,7 @@ Spree::CheckoutController.class_eval do
       sender = spree_current_user.referred_by
 
       #create credit (if required)
-      create_affiliate_credits(sender, spree_current_user, "purchase")
+      create_first_order_affiliate_credits(sender, spree_current_user, "purchase")
     end
   end
 end
